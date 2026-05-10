@@ -50,7 +50,7 @@ export default function App() {
   if (!session) return <AuthPage />;
 
   return (
-    <div className="min-h-screen">
+    <div className="relative min-h-screen overflow-hidden">
       <NavBar />
       <main className="mx-auto max-w-6xl px-4 py-6">
         <Routes>
@@ -60,6 +60,18 @@ export default function App() {
           <Route path="/links" element={<LinksPage />} />
         </Routes>
       </main>
+
+      {/* Background motivational quote */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed bottom-0 left-0 right-0 flex items-end justify-center pb-2 select-none overflow-hidden"
+      >
+        <span
+          className="text-center w-full px-4 text-[clamp(1.5rem,7vw,7rem)] font-black uppercase leading-none tracking-tighter text-slate-800/40"
+        >
+          THERE IS NO TOMORROW!
+        </span>
+      </div>
     </div>
   );
 }
