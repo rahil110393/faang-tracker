@@ -4,6 +4,7 @@ import { PhaseProgress } from "@/components/PhaseProgress";
 import { usePlanDays } from "@/hooks/usePlanDays";
 import { useDayDetail } from "@/hooks/useDayDetail";
 import { useItemCompletions, useDayTrackCounts } from "@/hooks/useItemCompletions";
+import { usePlanProgress } from "@/hooks/usePlanProgress";
 import type { Track } from "@/lib/database.types";
 
 const TRACKS: Track[] = ["DSA", "DESIGN", "BEHAVIORAL"];
@@ -14,6 +15,7 @@ const TRACK_LABEL: Record<Track, string> = {
 };
 
 export function Dashboard() {
+  const { currentPlanDay: planDay, daysLeft, percentDone, isWeekend, startDate } = usePlanProgress();
   const { data: planDays = [] } = usePlanDays();
   const { data: itemCompletions = [] } = useItemCompletions();
   const { data: trackCounts = [] } = useDayTrackCounts();
@@ -92,6 +94,51 @@ export function Dashboard() {
       </div>
 
       <PhaseProgress />
+
+      {/* Timetable preview */}
+      <div className="rounded-xl bg-slate-900 p-5 ring-1 ring-slate-800">
+        <div className="flex items-center justify-between mb-3">
+          <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+            Today's Schedule
+          </div>
+          <Link
+            to="/timetable"
+            className="rounded bg-slate-800 px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-700"
+          >
+            Open →
+          </Link>
+        </div>
+
+        {!startDate ? (
+          <p className="text-sm text-slate-500">
+            Set your plan start date in{" "}
+            <Link to="/timetable" className="text-sky-400 hover:underline">
+              Timetable
+            </Link>{" "}
+            to see your countdown.
+          </p>
+        ) : (
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-slate-300">
+                Day <span className="font-bold text-slate-50">{planDay}</span> of 60
+              </span>
+              <span className="text-slate-500">{daysLeft} days left</span>
+            </div>
+            <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+              <div
+                className="h-full bg-sky-500 transition-all"
+                style={{ width: `${percentDone}%` }}
+              />
+            </div>
+            <div className="text-xs text-slate-500">
+              {isWeekend
+                ? "Weekend — full sessions available"
+                : "Weekday — morning + evening windows"}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

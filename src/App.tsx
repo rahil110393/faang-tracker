@@ -6,6 +6,7 @@ import { Dashboard } from "@/pages/Dashboard";
 import { DaysGrid } from "@/pages/DaysGrid";
 import { DayView } from "@/pages/DayView";
 import { LinksPage } from "@/pages/LinksPage";
+import { TimetablePage } from "@/pages/TimetablePage";
 
 function NavBar() {
   const linkCls = ({ isActive }: { isActive: boolean }) =>
@@ -27,6 +28,9 @@ function NavBar() {
           </NavLink>
           <NavLink to="/links" className={linkCls}>
             Links
+          </NavLink>
+          <NavLink to="/timetable" className={linkCls}>
+            Timetable
           </NavLink>
           <button
             onClick={() => supabase.auth.signOut()}
@@ -58,6 +62,7 @@ export default function App() {
           <Route path="/days" element={<DaysGrid />} />
           <Route path="/day/:dayNumber" element={<DayView />} />
           <Route path="/links" element={<LinksPage />} />
+          <Route path="/timetable" element={<TimetablePage />} />
         </Routes>
       </main>
 

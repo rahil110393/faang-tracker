@@ -1,4 +1,5 @@
-import { Link, useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useParams, useLocation } from "react-router-dom";
 import { TaskItem } from "@/components/TaskItem";
 import { LinkManager } from "@/components/LinkManager";
 import { NoteEditor } from "@/components/NoteEditor";
@@ -12,9 +13,18 @@ const TRACKS: Track[] = ["DSA", "DESIGN", "BEHAVIORAL"];
 export function DayView() {
   const params = useParams<{ dayNumber: string }>();
   const dayNum = Number(params.dayNumber);
+  const { hash } = useLocation();
 
   const { data: planDays = [] } = usePlanDays();
   const { data: sections = [], isLoading: sectionsLoading } = useDayDetail(dayNum);
+
+  // When arriving from the timetable with a track anchor (e.g. #DSA), scroll to
+  // that track once its sections have loaded.
+  useEffect(() => {
+    if (sectionsLoading || !hash) return;
+    const el = document.getElementById(hash.slice(1));
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [hash, sectionsLoading, dayNum]);
   const { data: itemCompletions = [] } = useItemCompletions();
   const toggle = useToggleItemCompletion();
 
@@ -70,17 +80,18 @@ export function DayView() {
               .filter((s) => s.track === track)
               .sort((a, b) => a.sort_order - b.sort_order);
             return (
-              <TaskItem
-                key={track}
-                track={track}
-                sections={trackSections}
-                completedItemIds={completedItemIds}
-                onToggleItem={(itemId, completed) =>
-                  toggle.mutate({ itemId, completed })
-                }
-              >
-                <LinkManager day={dayNum} track={track} />
-              </TaskItem>
+              <div key={track} id={track} className="scroll-mt-20">
+                <TaskItem
+                  track={track}
+                  sections={trackSections}
+                  completedItemIds={completedItemIds}
+                  onToggleItem={(itemId, completed) =>
+                    toggle.mutate({ itemId, completed })
+                  }
+                >
+                  <LinkManager day={dayNum} track={track} />
+                </TaskItem>
+              </div>
             );
           })}
         </div>
