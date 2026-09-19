@@ -1,5 +1,6 @@
 import type { Track } from "@/lib/database.types";
 import type { PlanSectionRow, PlanItemRow } from "@/hooks/useDayDetail";
+import { GradeStrip } from "./GradeStrip";
 
 const TRACK_LABEL: Record<Track, string> = {
   DSA: "DSA (~1.5h)",
@@ -21,41 +22,48 @@ const DIFFICULTY_COLOR: Record<string, string> = {
 
 function ItemRow({
   item,
+  track,
   completed,
   onToggle,
 }: {
   item: PlanItemRow;
+  track: Track;
   completed: boolean;
   onToggle: () => void;
 }) {
   return (
-    <label className="flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 hover:bg-slate-800/60">
-      <input
-        type="checkbox"
-        checked={completed}
-        onChange={onToggle}
-        className="h-4 w-4 flex-shrink-0 cursor-pointer accent-emerald-400"
-      />
-      <span className={`flex-1 text-sm ${completed ? "line-through text-slate-500" : "text-slate-100"}`}>
-        {item.title}
-      </span>
-      {item.difficulty && (
-        <span className={`text-xs font-medium ${DIFFICULTY_COLOR[item.difficulty]}`}>
-          {item.difficulty}
+    <div className="rounded px-2 py-1.5 hover:bg-slate-800/60">
+      {/* The label wraps only the checkbox row — the grade buttons must stay
+          outside it, or clicking one would re-toggle the checkbox. */}
+      <label className="flex cursor-pointer items-center gap-2">
+        <input
+          type="checkbox"
+          checked={completed}
+          onChange={onToggle}
+          className="h-4 w-4 flex-shrink-0 cursor-pointer accent-emerald-400"
+        />
+        <span className={`flex-1 text-sm ${completed ? "line-through text-slate-500" : "text-slate-100"}`}>
+          {item.title}
         </span>
-      )}
-      {item.leetcode_url && (
-        <a
-          href={item.leetcode_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={(e) => e.stopPropagation()}
-          className="text-xs text-sky-400 hover:underline"
-        >
-          LC↗
-        </a>
-      )}
-    </label>
+        {item.difficulty && (
+          <span className={`text-xs font-medium ${DIFFICULTY_COLOR[item.difficulty]}`}>
+            {item.difficulty}
+          </span>
+        )}
+        {item.leetcode_url && (
+          <a
+            href={item.leetcode_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="text-xs text-sky-400 hover:underline"
+          >
+            LC↗
+          </a>
+        )}
+      </label>
+      {completed && <GradeStrip itemId={item.id} track={track} />}
+    </div>
   );
 }
 
@@ -106,6 +114,7 @@ export function TaskItem({
                 <ItemRow
                   key={item.id}
                   item={item}
+                  track={track}
                   completed={completedItemIds.has(item.id)}
                   onToggle={() =>
                     onToggleItem(item.id, completedItemIds.has(item.id))
