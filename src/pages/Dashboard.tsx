@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { StreakBadge } from "@/components/StreakBadge";
 import { PhaseProgress } from "@/components/PhaseProgress";
+import { ReviewQueue } from "@/components/ReviewQueue";
 import { usePlanDays } from "@/hooks/usePlanDays";
 import { useDayDetail } from "@/hooks/useDayDetail";
 import { useItemCompletions, useDayTrackCounts } from "@/hooks/useItemCompletions";
@@ -94,6 +95,8 @@ export function Dashboard() {
       </div>
 
       <PhaseProgress />
+
+      <ReviewQueue />
 
       {/* Timetable preview */}
       <div className="rounded-xl bg-slate-900 p-5 ring-1 ring-slate-800">

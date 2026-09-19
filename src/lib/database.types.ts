@@ -142,6 +142,52 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["item_completions"]["Insert"]>;
         Relationships: [];
       };
+      review_cards: {
+        Row: {
+          id: string;
+          user_id: string;
+          item_id: string;
+          ease_factor: number;
+          interval_days: number;
+          repetitions: number;
+          due_on: string;
+          last_grade: number | null;
+          last_reviewed_at: string;
+          lapses: number;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          item_id: string;
+          ease_factor?: number;
+          interval_days?: number;
+          repetitions?: number;
+          due_on: string;
+          last_grade?: number | null;
+          last_reviewed_at?: string;
+          lapses?: number;
+        };
+        Update: Partial<Database["public"]["Tables"]["review_cards"]["Insert"]>;
+        Relationships: [];
+      };
+      review_log: {
+        Row: {
+          id: string;
+          user_id: string;
+          item_id: string;
+          grade: number;
+          reviewed_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          item_id: string;
+          grade: number;
+          reviewed_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["review_log"]["Insert"]>;
+        Relationships: [];
+      };
     };
     Views: {
       day_track_item_counts: {
